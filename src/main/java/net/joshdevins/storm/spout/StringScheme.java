@@ -3,8 +3,6 @@ package net.joshdevins.storm.spout;
 import java.nio.charset.Charset;
 import java.util.List;
 
-import org.apache.log4j.Logger;
-
 import backtype.storm.spout.Scheme;
 import backtype.storm.tuple.Fields;
 import backtype.storm.tuple.Values;
@@ -25,18 +23,9 @@ public class StringScheme implements Scheme {
 
     private static final Charset UTF8 = Charset.forName("UTF-8");
 
-    private static final Logger LOG = Logger.getLogger(StringScheme.class);
-
     @Override
     public List<Object> deserialize(final byte[] bytes) {
-
-        String payload = new String(bytes, UTF8);
-
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Deserialized payload: " + payload);
-        }
-
-        return new Values(payload);
+        return new Values(new String(bytes, UTF8));
     }
 
     @Override
