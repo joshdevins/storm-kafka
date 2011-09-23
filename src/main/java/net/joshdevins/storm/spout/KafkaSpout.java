@@ -66,13 +66,6 @@ public class KafkaSpout extends BasicSchemeSpout {
     @Override
     public void nextTuple() {
 
-        if (!consumerIterator.hasNext()) {
-
-            // as per the docs, sleep for a bit
-            Utils.sleep(50);
-            return;
-        }
-
         Message msg = consumerIterator.next();
 
         if (msg != null && msg.isValid()) {
