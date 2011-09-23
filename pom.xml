@@ -35,87 +35,71 @@
                     <downloadJavadocs>true</downloadJavadocs>
                 </configuration>
             </plugin>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                    <archive>
+                        <manifest>
+                            <!-- java -Djava.library.path=/usr/local/lib -jar target/storm-kafka-1-SNAPSHOT-jar-with-dependencies.jar -->
+                            <mainClass>net.joshdevins.storm.topologies.KafkaTestTopology</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
     <dependencies>
 
         <!-- STORM -->
-        <!-- http://clojars.org/repo -->
         <!-- only need the API to compile against, the rest will exist at runtime since this will be 
             packaged into a storm uber jar -->
         <dependency>
-            <groupId>storm</groupId>
+            <groupId>storm</groupId> <!-- http://clojars.org/repo -->
             <artifactId>storm</artifactId>
             <version>0.5.1</version>
-            <scope>provided</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>backtype</groupId>
-                    <artifactId>thriftjava</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>backtype</groupId>
-                    <artifactId>jzmq</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>commons-io</groupId>
-                    <artifactId>commons-io</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apache.commons</groupId>
-                    <artifactId>commons-exec</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>jvyaml</groupId>
-                    <artifactId>jvyaml</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apache.zookeeper</groupId>
-                    <artifactId>zookeeper</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.clojure</groupId>
-                    <artifactId>clojure</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.clojure</groupId>
-                    <artifactId>clojure-contrib</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>hiccup</groupId>
-                    <artifactId>hiccup</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>clj-time</groupId>
-                    <artifactId>clj-time</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.googlecode.json-simple</groupId>
-                    <artifactId>json-simple</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>compojure</groupId>
-                    <artifactId>compojure</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>ring</groupId>
-                    <artifactId>ring-jetty-adapter</artifactId>
-                </exclusion>
-            </exclusions>
+            <!-- <scope>provided</scope> <exclusions> <exclusion> <groupId>backtype</groupId> <artifactId>thriftjava</artifactId> 
+                </exclusion> <exclusion> <groupId>backtype</groupId> <artifactId>jzmq</artifactId> </exclusion> <exclusion> 
+                <groupId>commons-io</groupId> <artifactId>commons-io</artifactId> </exclusion> <exclusion> <groupId>org.apache.commons</groupId> 
+                <artifactId>commons-exec</artifactId> </exclusion> <exclusion> <groupId>jvyaml</groupId> <artifactId>jvyaml</artifactId> 
+                </exclusion> <exclusion> <groupId>org.apache.zookeeper</groupId> <artifactId>zookeeper</artifactId> </exclusion> 
+                <exclusion> <groupId>org.clojure</groupId> <artifactId>clojure</artifactId> </exclusion> <exclusion> 
+                <groupId>org.clojure</groupId> <artifactId>clojure-contrib</artifactId> </exclusion> <exclusion> <groupId>hiccup</groupId> 
+                <artifactId>hiccup</artifactId> </exclusion> <exclusion> <groupId>clj-time</groupId> <artifactId>clj-time</artifactId> 
+                </exclusion> <exclusion> <groupId>com.googlecode.json-simple</groupId> <artifactId>json-simple</artifactId> 
+                </exclusion> <exclusion> <groupId>compojure</groupId> <artifactId>compojure</artifactId> </exclusion> 
+                <exclusion> <groupId>ring</groupId> <artifactId>ring-jetty-adapter</artifactId> </exclusion> </exclusions> -->
         </dependency>
 
         <!-- KAFKA -->
-        <!-- NOTE: Kafka don't exist in any Maven repo that I could find so you need to sort this out 
-            for yourself -->
+        <!-- NOTE: some of these dependecies don't exist in any Maven repo that I could find so you need 
+            to sort this out for yourself -->
         <!-- also define all dependencies needed by the Kafka consumer at runtime -->
         <dependency>
-            <groupId>org.apache.incubator.kafka</groupId>
+            <groupId>org.apache.incubator.kafka</groupId> <!-- manual install -->
             <artifactId>kafka</artifactId>
             <version>0.6.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-library</artifactId>
+            <version>2.8.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.sgroschupf</groupId> <!-- oss.sonatype.org -->
+            <artifactId>zkclient</artifactId>
+            <version>0.1</version>
+        </dependency>
 
         <!-- STANDARD -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.0.1</version>
+        </dependency>
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
