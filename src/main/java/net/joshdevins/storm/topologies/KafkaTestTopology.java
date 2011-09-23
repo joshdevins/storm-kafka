@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import net.joshdevins.storm.spout.KafkaSpout;
+import net.joshdevins.storm.spout.StringScheme;
 import backtype.storm.Config;
 import backtype.storm.LocalCluster;
 import backtype.storm.topology.IRichSpout;
@@ -46,6 +47,6 @@ public class KafkaTestTopology {
         kafkaProps.put("zk.connectiontimeout.ms", "1000000");
         kafkaProps.put("groupid", "storm_group");
 
-        return new KafkaSpout(kafkaProps, "test");
+        return new KafkaSpout(kafkaProps, "test", new StringScheme());
     }
 }
