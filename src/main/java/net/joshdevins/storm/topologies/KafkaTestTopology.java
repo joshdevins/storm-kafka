@@ -25,7 +25,10 @@ public class KafkaTestTopology {
     public static void main(final String[] args) {
 
         TopologyBuilder builder = new TopologyBuilder();
-        builder.setSpout(COMPONENTS.KAFKA_SPOUT.id(), createKafkaSpout());
+
+        // ensure that you have the same or more partitions on the Kafka broker
+        // if parallelism count is greater than partitions, some spouts/consumers will sit idle
+        builder.setSpout(COMPONENTS.KAFKA_SPOUT.id(), createKafkaSpout(), 5);
 
         Map<String, Object> conf = new HashMap<String, Object>();
         conf.put(Config.TOPOLOGY_DEBUG, true);
@@ -45,7 +48,7 @@ public class KafkaTestTopology {
         Properties kafkaProps = new Properties();
         kafkaProps.put("zk.connect", "localhost:2182");
         kafkaProps.put("zk.connectiontimeout.ms", "1000000");
-        kafkaProps.put("groupid", "storm_group");
+        kafkaProps.put("groupid", "storm");
 
         return new KafkaSpout(kafkaProps, "test", new StringScheme());
     }

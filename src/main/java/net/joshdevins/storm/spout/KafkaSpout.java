@@ -60,7 +60,7 @@ public class KafkaSpout extends BasicSchemeSpout {
     @Override
     public boolean isDistributed() {
         // TODO: this is true in the Kestrel version
-        return super.isDistributed();
+        return true;
     }
 
     @Override
@@ -78,6 +78,8 @@ public class KafkaSpout extends BasicSchemeSpout {
             emit(bytes);
 
         } else {
+
+            // TODO: This gets dropped on the floor! Consider letting someone do something more robust here if we care?
             if (LOG.isInfoEnabled()) {
                 LOG.info("Message pulled from consumer is null or not valid: " + msg == null ? "null" : "invalid");
             }
