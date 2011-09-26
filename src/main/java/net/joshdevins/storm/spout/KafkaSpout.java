@@ -20,10 +20,11 @@ import backtype.storm.spout.Scheme;
 import backtype.storm.utils.Utils;
 
 /**
- * This spout can be used to consume messages in a reliable way from a cluster of Kafka brokers. When you create this
- * spout in Storm, it is recommended that the parallelism hint you set be less than or equal to the number of partitions
- * available for the topic you are consuming from. If you specify a parallelism hint that is great than the number of
- * partitions, some spouts/consumers will sit idle and not do anything. This design is inherent to the way Kafka works.
+ * This spout can be used to consume messages from a cluster of Kafka brokers. The consumption and further processing in
+ * the Storm topology is currently unreliable! When you create this spout in Storm, it is recommended that the
+ * parallelism hint you set be less than or equal to the number of partitions available for the topic you are consuming
+ * from. If you specify a parallelism hint that is great than the number of partitions, some spouts/consumers will sit
+ * idle and not do anything. This design is inherent to the way Kafka works.
  * 
  * @author Josh Devins
  */
@@ -74,18 +75,18 @@ public class KafkaSpout extends BasicSchemeSpout {
 
     /**
      * Consume one message from the Kafka segment on the broker. As per the documentation on {@link ISpout}, this method
-     * <strong>must</strong> be non-blocking, otherwise ack and fail messages will be blocked as well. This might be why
-     * there is the recommendation to put in the sleeps on failure and after seeing no messages on the consumer.
+     * <strong>must</strong> be non-blocking if reliability measures are enabled/used, otherwise ack and fail messages
+     * will be blocked as well. This current implementation is not reliable so we use a blocking consumer.
      */
     @Override
     public void nextTuple() {
 
         // test to see if there is anything to be consumed, if not, sleep for a while
         // FIXME: this is blocking and as such, will always return true
-        if (!consumerIterator.hasNext()) {
-            Utils.sleep(50);
-            return;
-        }
+        // if (!consumerIterator.hasNext()) {
+        // Utils.sleep(50);
+        // return;
+        // }
 
         Message msg = consumerIterator.next();
 

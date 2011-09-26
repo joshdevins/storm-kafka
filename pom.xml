@@ -43,7 +43,6 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <!-- java -Djava.library.path=/usr/local/lib -jar target/storm-kafka-1-SNAPSHOT-jar-with-dependencies.jar -->
                             <mainClass>net.joshdevins.storm.topologies.KafkaTestTopology</mainClass>
                         </manifest>
                     </archive>
@@ -55,23 +54,10 @@
     <dependencies>
 
         <!-- STORM -->
-        <!-- only need the API to compile against, the rest will exist at runtime since this will be 
-            packaged into a storm uber jar -->
         <dependency>
             <groupId>storm</groupId> <!-- http://clojars.org/repo -->
             <artifactId>storm</artifactId>
             <version>0.5.2</version>
-            <!-- <scope>provided</scope> <exclusions> <exclusion> <groupId>backtype</groupId> <artifactId>thriftjava</artifactId> 
-                </exclusion> <exclusion> <groupId>backtype</groupId> <artifactId>jzmq</artifactId> </exclusion> <exclusion> 
-                <groupId>commons-io</groupId> <artifactId>commons-io</artifactId> </exclusion> <exclusion> <groupId>org.apache.commons</groupId> 
-                <artifactId>commons-exec</artifactId> </exclusion> <exclusion> <groupId>jvyaml</groupId> <artifactId>jvyaml</artifactId> 
-                </exclusion> <exclusion> <groupId>org.apache.zookeeper</groupId> <artifactId>zookeeper</artifactId> </exclusion> 
-                <exclusion> <groupId>org.clojure</groupId> <artifactId>clojure</artifactId> </exclusion> <exclusion> 
-                <groupId>org.clojure</groupId> <artifactId>clojure-contrib</artifactId> </exclusion> <exclusion> <groupId>hiccup</groupId> 
-                <artifactId>hiccup</artifactId> </exclusion> <exclusion> <groupId>clj-time</groupId> <artifactId>clj-time</artifactId> 
-                </exclusion> <exclusion> <groupId>com.googlecode.json-simple</groupId> <artifactId>json-simple</artifactId> 
-                </exclusion> <exclusion> <groupId>compojure</groupId> <artifactId>compojure</artifactId> </exclusion> 
-                <exclusion> <groupId>ring</groupId> <artifactId>ring-jetty-adapter</artifactId> </exclusion> </exclusions> -->
         </dependency>
 
         <!-- KAFKA -->
