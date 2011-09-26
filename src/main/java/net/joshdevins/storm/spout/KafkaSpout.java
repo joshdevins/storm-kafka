@@ -80,18 +80,14 @@ public class KafkaSpout extends BasicSchemeSpout {
     @Override
     public void nextTuple() {
 
-        System.out.println("in nextTuple: " + consumerIterator.hasNext());
-
         // test to see if there is anything to be consumed, if not, sleep for a while
+        // FIXME: this is blocking and as such, will always return true
         if (!consumerIterator.hasNext()) {
-            System.out.println("Nothing to consume...");
             Utils.sleep(50);
             return;
         }
 
-        System.out.println("before next()");
         Message msg = consumerIterator.next();
-        System.out.println("after next()");
 
         if (msg != null && msg.isValid()) {
 
