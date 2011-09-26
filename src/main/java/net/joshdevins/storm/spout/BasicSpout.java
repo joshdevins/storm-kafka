@@ -20,33 +20,61 @@ public abstract class BasicSpout implements IRichSpout {
 
     private SpoutOutputCollector collector;
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see backtype.storm.spout.ISpout#ack(java.lang.Object)
+     */
     @Override
     public void ack(final Object msgId) {
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see backtype.storm.spout.ISpout#close()
+     */
     @Override
     public void close() {
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see backtype.storm.spout.ISpout#fail(java.lang.Object)
+     */
     @Override
     public void fail(final Object msgId) {
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see backtype.storm.topology.IRichSpout#isDistributed()
+     */
     @Override
     public boolean isDistributed() {
-        return false;
+        return true;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see backtype.storm.spout.ISpout#open(java.util.Map, backtype.storm.task.TopologyContext,
+     * backtype.storm.spout.SpoutOutputCollector)
+     */
     @Override
     public void open(@SuppressWarnings("rawtypes") final Map conf, final TopologyContext context,
             final SpoutOutputCollector collector) {
 
         this.collector = collector;
+
+        // call the abstract method that most spouts will probably implement over this
         open();
     }
 
-    protected void emit(final List<Object> values) {
-        collector.emit(values);
+    protected List<Integer> emit(final List<Object> values) {
+        return collector.emit(values);
     }
 
     protected SpoutOutputCollector getOutputCollector() {

@@ -15,13 +15,15 @@ import kafka.message.Message;
 
 import org.apache.log4j.Logger;
 
+import backtype.storm.spout.ISpout;
 import backtype.storm.spout.Scheme;
 import backtype.storm.utils.Utils;
 
 /**
  * This spout can be used to consume messages in a reliable way from a cluster of Kafka brokers. When you create this
- * spout in Storm, it is recommended that the parallelism hint you set be the same as the number of streams you set for
- * the Kafka consumer. This will ensure proper resource utilization and maximal efficiency on the Kafka brokers.
+ * spout in Storm, it is recommended that the parallelism hint you set be less than or equal to the number of partitions
+ * available for the topic you are consuming from. If you specify a parallelism hint that is great than the number of
+ * partitions, some spouts/consumers will sit idle and not do anything. This design is inherent to the way Kafka works.
  * 
  * @author Josh Devins
  */
@@ -40,7 +42,17 @@ public class KafkaSpout extends BasicSchemeSpout {
     private ConsumerIterator consumerIterator;
 
     /**
-     * Default constructor. Can only pass in the properties since everything in this class must be serializable!
+     * Default constructor. Actual Kafka consumers are be created and started on {@link #open()}.
+     * 
+     * @param kafkaProperties
+     *        Properties to be used when constructing the Kafka {@link ConsumerConnector}.
+     * @param topic
+     *        The Kafka topic to consumer from.
+     * @param scheme
+     *        A {@link Scheme} that will be responsible for deserializing messages coming from Kafka. Whatever objects
+     *        this produces needs to be natively understood by Storm or needs to be <a
+     *        href="https://github.com/nathanmarz/storm/wiki/Serialization">registered with Storm</a> as a serializable
+     *        type. Your best bet however is to stick to "native" types and use the internal tuple structure.
      */
     public KafkaSpout(final Properties kafkaProperties, final String topic, final Scheme scheme) {
         super(scheme);
@@ -49,6 +61,9 @@ public class KafkaSpout extends BasicSchemeSpout {
         this.topic = topic;
     }
 
+    /**
+     * Cleanup the underlying Kafka consumer.
+     */
     @Override
     public void close() {
 
@@ -57,16 +72,26 @@ public class KafkaSpout extends BasicSchemeSpout {
         }
     }
 
-    @Override
-    public boolean isDistributed() {
-        // TODO: this is true in the Kestrel version
-        return true;
-    }
-
+    /**
+     * Consume one message from the Kafka segment on the broker. As per the documentation on {@link ISpout}, this method
+     * <strong>must</strong> be non-blocking, otherwise ack and fail messages will be blocked as well. This might be why
+     * there is the recommendation to put in the sleeps on failure and after seeing no messages on the consumer.
+     */
     @Override
     public void nextTuple() {
 
+        System.out.println("in nextTuple: " + consumerIterator.hasNext());
+
+        // test to see if there is anything to be consumed, if not, sleep for a while
+        if (!consumerIterator.hasNext()) {
+            System.out.println("Nothing to consume...");
+            Utils.sleep(50);
+            return;
+        }
+
+        System.out.println("before next()");
         Message msg = consumerIterator.next();
+        System.out.println("after next()");
 
         if (msg != null && msg.isValid()) {
 
@@ -89,13 +114,19 @@ public class KafkaSpout extends BasicSchemeSpout {
         }
     }
 
+    /**
+     * Create a Kafka consumer.
+     */
     @Override
     public void open() {
 
-        // build up the Kafka consumer
+        // these consumers use ZooKeeper for commit, offset and segment consumption tracking
+        // TODO: consider using SimpleConsumer the same way the Hadoop consumer job does to avoid ZK dependency
+        // TODO: use the task details from TopologyContext in the normal open method
         ConsumerConfig consumerConfig = new ConsumerConfig(kafkaProperties);
         consumerConnector = Consumer.createJavaConsumerConnector(consumerConfig);
 
+        // consumer with just one thread since the real parallelism is handled by Storm already
         Map<String, Integer> topicCountMap = new HashMap<String, Integer>();
         topicCountMap.put(topic, new Integer(1));
 

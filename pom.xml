@@ -60,7 +60,7 @@
         <dependency>
             <groupId>storm</groupId> <!-- http://clojars.org/repo -->
             <artifactId>storm</artifactId>
-            <version>0.5.1</version>
+            <version>0.5.2</version>
             <!-- <scope>provided</scope> <exclusions> <exclusion> <groupId>backtype</groupId> <artifactId>thriftjava</artifactId> 
                 </exclusion> <exclusion> <groupId>backtype</groupId> <artifactId>jzmq</artifactId> </exclusion> <exclusion> 
                 <groupId>commons-io</groupId> <artifactId>commons-io</artifactId> </exclusion> <exclusion> <groupId>org.apache.commons</groupId> 

@@ -28,7 +28,7 @@ public class KafkaTestTopology {
 
         // ensure that you have the same or more partitions on the Kafka broker
         // if parallelism count is greater than partitions, some spouts/consumers will sit idle
-        builder.setSpout(COMPONENTS.KAFKA_SPOUT.id(), createKafkaSpout(), 5);
+        builder.setSpout(COMPONENTS.KAFKA_SPOUT.id(), createKafkaSpout(), 1);
 
         Map<String, Object> conf = new HashMap<String, Object>();
         conf.put(Config.TOPOLOGY_DEBUG, true);

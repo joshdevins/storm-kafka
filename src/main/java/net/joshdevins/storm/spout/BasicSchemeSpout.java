@@ -1,5 +1,7 @@
 package net.joshdevins.storm.spout;
 
+import java.util.List;
+
 import org.apache.commons.lang3.Validate;
 
 import backtype.storm.spout.Scheme;
@@ -33,7 +35,7 @@ public abstract class BasicSchemeSpout extends BasicSpout {
     /**
      * Delegates deserialization to the {@link Scheme}.
      */
-    protected void emit(final byte[] bytes) {
-        emit(scheme.deserialize(bytes));
+    protected List<Integer> emit(final byte[] bytes) {
+        return emit(scheme.deserialize(bytes));
     }
 }
